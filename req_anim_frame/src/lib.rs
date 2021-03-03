@@ -39,19 +39,42 @@ pub fn main() {
     // A reference counted pointer to the closure that will update and render the game
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
-
+    // we update the window here just to reference the buffer
+    // internally. Next calls to .update() will use the same buffer
+    window
+        .update_with_buffer(&buffer, WIDTH, HEIGHT)
+        .unwrap();
+    let mut pos_x : u32 = 0;
+    let mut pos_y : u32 = 0;
+    let mut step_x : i32 = 1;
+    let mut step_y : i32 = 2;
+    let cube_size = 50;
     // create the closure for updating and rendering the game.
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         for val in buffer.iter_mut() {
-            if *val == 0 {*val = 0xFFFFFFFF;}
-            else {*val = 0;}
+            *val = 0; // clear screen
+        }
+        for i in 0..cube_size{
+            for j in 0..cube_size{
+                let pixel = i+pos_x+(j+pos_y)*WIDTH as u32;
+                buffer[pixel as usize] = 0xFF42f5ad; //ABGR
+            }
+        }
+        pos_x = (pos_x as i32 + step_x) as u32;
+        pos_y = (pos_y as i32 + step_y) as u32;
+        
+        if pos_x <= 0 || pos_x + cube_size >= WIDTH as u32 {
+            step_x = step_x * -1
+        }
+        if pos_y <= 0 || pos_y + cube_size >= HEIGHT as u32 {
+            step_y = step_y * -1
         }
 
-        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
+        // we could update_with_buffer here, but there is no need
+        // as the buffer is referenced from inside the ImageData, and
+        // we push that to the canvas
         window
-            .update_with_buffer(&buffer, WIDTH, HEIGHT)
-            .unwrap();
-
+            .update();
         // schedule this closure for running again at next frame
         request_animation_frame(f.borrow().as_ref().unwrap());
     }) as Box<dyn FnMut() + 'static>));

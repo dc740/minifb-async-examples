@@ -1,6 +1,8 @@
 # minifb-async-examples
 Some test projects I used to test minifb in webassembly.
 
-WARNING: the demo project contains flashes. It's a screen toggling from white to black over and over and most likely you will feel dizzy. Don't run the demo if you are sensitive to certain patterns.
+## How to run it
 
-Feel free to send a PR to change it for something easier to watch.
+* make sure you have wasm-pack installed
+* Optionally, wasm-opt can be used to optimize the compiled binary (recommended)
+* Run ./build.sh on linux.
