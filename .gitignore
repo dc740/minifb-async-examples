@@ -11,3 +11,8 @@
 **/*.wasm
 **/*.js
 **/*.ts
+
+
+# Added by cargo
+
+/target
