@@ -54,7 +54,14 @@ impl BouncyBox {
         for i in 0..self.cube_size{
             for j in 0..self.cube_size{
                 let pixel = i+self.pos_x+(j+self.pos_y)*self.window_width as u32;
-                self.buffer[pixel as usize] = 0xFF42F5AD; //ABGR
+                #[cfg(feature = "web")]
+                {
+                    self.buffer[pixel as usize] = 0xFF42F5AD; //ABGR
+                }
+                #[cfg(not(feature = "web"))]
+                {
+                    self.buffer[pixel as usize] = 0xFFADF542; //ARGB
+                }
             }
         }
         self.pos_x = (self.pos_x as i32 + self.step_x) as u32;

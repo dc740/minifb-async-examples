@@ -5,8 +5,7 @@ authors = ["dc"]
 edition = "2018"
 
 [lib]
-crate-type = ["cdylib"]
-
+crate-type = ["cdylib", "rlib"]
 
 
 [features]

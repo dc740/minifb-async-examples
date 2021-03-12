@@ -1,15 +1,7 @@
-[package]
-name = "minifb-async-examples"
-version = "0.1.0"
-authors = ["Emilio Moretti <emilio.moretti@gmail.com>"]
-edition = "2018"
-
-[features]
-default = [ "minifb_demo/desktop" ]
-
 [workspace]
+members = [
+    "minifb_demo",
+    "desktop_app"
+]
 
-[dependencies]
-async-std = "1.9.0"
-minifb = { git = 'https://github.com/dc740/rust_minifb.git', branch = 'wasm_websys_wip', default-features = true }
-minifb_demo = { path = "./minifb_demo" }
+

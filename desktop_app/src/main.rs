@@ -1,12 +1,10 @@
-extern crate minifb;
-extern crate minifb_demo;
-
 use minifb::{Key, Window, WindowOptions};
+
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
 
 fn main() {
-    let mut boxy = BouncyBox::new(WIDTH, HEIGHT);
+    let mut boxy = minifb_demo::my_game::BouncyBox::new(WIDTH, HEIGHT);
 
     let mut window = Window::new(
         "Bouncy Box demo",

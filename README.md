@@ -1,9 +1,12 @@
 # minifb-async-examples
 This project can be compiled to webassembly and desktop.
-The desktop part is still unfinished, but the idea is to share
-the code between both versions so you can test it on a browser
-and a desktop.
 
+There is only one thing to keep in mind:
+* desktop app expects the pixels to be in ARGB
+* web app expects the pixels to be in ABGR
+
+Check the game_step() function to see an example of
+conditional compilation.
 
 ## How to run in a browser
 
@@ -12,4 +15,4 @@ and a desktop.
 
 ## How to run in a desktop
 
-* cargo run
+* cargo run -p desktop_app

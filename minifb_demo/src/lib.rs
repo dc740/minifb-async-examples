@@ -1,29 +1,35 @@
-extern crate minifb;
-extern crate wasm_bindgen;
-extern crate web_sys;
-extern crate console_error_panic_hook;
 pub mod my_game;
+#[cfg(feature = "web")]
 use std::panic;
+#[cfg(feature = "web")]
 use minifb::{Window, WindowOptions};
+#[cfg(feature = "web")]
 use std::cell::RefCell;
+#[cfg(feature = "web")]
 use std::rc::Rc;
+#[cfg(feature = "web")]
+use console_error_panic_hook;
+#[cfg(feature = "web")]
 use wasm_bindgen::prelude::*;
+#[cfg(feature = "web")]
 use wasm_bindgen::JsCast;
 
 use crate::my_game::BouncyBox;
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
+#[cfg(feature = "web")]
 fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")
 }
-
+#[cfg(feature = "web")]
 fn request_animation_frame(f: &Closure<dyn FnMut()>) {
     window()
         .request_animation_frame(f.as_ref().unchecked_ref())
         .expect("should register `requestAnimationFrame` OK");
 }
 
+#[cfg(feature = "web")]
 #[wasm_bindgen(start)]
 pub fn main() {
     panic::set_hook(Box::new(console_error_panic_hook::hook));

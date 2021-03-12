@@ -7,7 +7,7 @@ echo wasm-opt pkg/req_anim_frame.wasm -o ../demo_server/web_app/req_anim_frame.w
 echo Cleaning up previous builds...
 rm demo_server/web_app/req_anim_frame.wasm_bg.wasm demo_server/web_app/req_anim_frame.js
 echo Compiling web application
-cd req_anim_frame
+cd minifb_demo
 wasm-pack build --target web --out-name req_anim_frame.wasm -- --features web --no-default-features || exit 1
 echo Copying the compiled wasm to our demo server
 cp pkg/req_anim_frame.js ../demo_server/web_app/
