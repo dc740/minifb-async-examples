@@ -1,5 +1,5 @@
 [package]
-name = "minifb-web-demo"
+name = "minifb_demo"
 version = "0.1.0"
 authors = ["dc"]
 edition = "2018"
