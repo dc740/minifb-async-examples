@@ -1,4 +1,4 @@
-# minifb-async-examples
+# minifb multiplatform (webassembly too!) example
 This project can be compiled to webassembly and desktop.
 
 There is only one thing to keep in mind:
