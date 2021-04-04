@@ -1,4 +1,4 @@
-
+use minifb::{Key, Window};
 /**
  * This is a bouncy box. No more, no less.
  * Bouncing through time in this ephimeral hologram of existence.
@@ -50,7 +50,7 @@ impl BouncyBox {
             *val = 0; // clear screen
         }
     }
-    pub fn game_step(&mut self) {
+    pub fn game_step(&mut self, window : &Window) {
         for i in 0..self.cube_size{
             for j in 0..self.cube_size{
                 let pixel = i+self.pos_x+(j+self.pos_y)*self.window_width as u32;
@@ -66,7 +66,16 @@ impl BouncyBox {
         }
         self.pos_x = (self.pos_x as i32 + self.step_x) as u32;
         self.pos_y = (self.pos_y as i32 + self.step_y) as u32;
-        
+        if window.is_key_down(Key::Up) {
+            self.step_y = -2;
+        } else if window.is_key_down(Key::Down) {
+            self.step_y = 2;
+        }
+        if window.is_key_down(Key::Left) {
+            self.step_x = -1;
+        } else if window.is_key_down(Key::Right) {
+            self.step_x = 1;
+        }
         if self.pos_x == 0 || self.pos_x + self.cube_size >= self.window_width as u32 {
             self.step_x *= -1
         }
