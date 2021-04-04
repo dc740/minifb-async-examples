@@ -72,7 +72,7 @@ impl BouncyBox {
     pub fn clear_screen(&mut self, buffer_offset: u32) {
         self.buffer.fill(0, buffer_offset, self.area_size as u32);
     }
-    pub fn game_step(&mut self) {
+    pub fn game_step(&mut self, window : &Window) {
         let offset = self.flip_buffer_in_use(); //take one buffer and flag it as busy
         self.clear_screen(offset);
         for i in 0..self.cube_size {

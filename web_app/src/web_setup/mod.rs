@@ -47,7 +47,8 @@ pub fn main() {
         .unwrap();
     // create the closure for updating and rendering the game.
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
-        boxy.game_step();
+        boxy.clear_screen();
+        boxy.game_step(&window);
 
         // we could update_with_buffer here, but there is no need
         // as the buffer is referenced from inside the ImageData, and
