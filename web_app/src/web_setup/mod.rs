@@ -1,8 +1,8 @@
-use std::panic;
+use console_error_panic_hook;
 use minifb::{Window, WindowOptions};
 use std::cell::RefCell;
+use std::panic;
 use std::rc::Rc;
-use console_error_panic_hook;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -38,6 +38,8 @@ pub fn main() {
     // A reference counted pointer to the closure that will update and render the game
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
+    //TODO: mejor creamos un UInt32Array para referenciarlo desde el request_animation_frame
+    //y dejamos el boxy.buffer para un worker
     // we update the window here just to reference the buffer
     // internally. Next calls to .update() will use the same buffer
     window
@@ -45,14 +47,12 @@ pub fn main() {
         .unwrap();
     // create the closure for updating and rendering the game.
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
-        boxy.clear_screen();
         boxy.game_step();
 
         // we could update_with_buffer here, but there is no need
         // as the buffer is referenced from inside the ImageData, and
         // we push that to the canvas
-        window
-            .update();
+        window.update();
         // schedule this closure for running again at next frame
         request_animation_frame(f.borrow().as_ref().unwrap());
     }) as Box<dyn FnMut() + 'static>));
@@ -60,5 +60,3 @@ pub fn main() {
     // start the animation loop
     request_animation_frame(g.borrow().as_ref().unwrap());
 }
-
-
