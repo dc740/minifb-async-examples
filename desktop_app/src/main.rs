@@ -21,7 +21,7 @@ fn main() {
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         boxy.clear_screen();
-        boxy.game_step();
+        boxy.game_step(&window);
 
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
