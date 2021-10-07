@@ -1,3 +1,5 @@
+mod precalc;
+
 use minifb::{Key, Window};
 /**
  * This is a bouncy box. No more, no less.
@@ -15,14 +17,12 @@ use minifb::{Key, Window};
  * I was not that bored to keep writting anyway. What are
  * you doing with your life?
  */
-use js_sys::{SharedArrayBuffer, Uint32Array};
 use js_sys::Math::tan;
 
 pub struct BouncyBox {
-    pub shared_buffer: SharedArrayBuffer,
     pub window_width: usize,
     pub window_height: usize,
-    buffer: Uint32Array,
+    pub buffer: Vec<u32>,
     pos_x: u32,
     pos_y: u32,
     step_x: i32,
@@ -36,15 +36,13 @@ impl BouncyBox {
         //the last 8 bytes are reserved to indicate which buffer to read from
         //and other flags I may need in the future. AKA: I'm lazy and it was easier this way.
         let buffer_len: usize = (1 + window_width * window_height) * 4 * 2;
-        let shared_array_buffer = SharedArrayBuffer::new(buffer_len as u32);
-        let buffer = Uint32Array::new(&shared_array_buffer);
+        let buffer : Vec<u32> = vec![0; buffer_len];
         let pos_x: u32 = 0;
         let pos_y: u32 = 0;
         let step_x: i32 = 1;
         let step_y: i32 = 2;
         let cube_size = 50;
         BouncyBox {
-            shared_buffer: shared_array_buffer,
             window_width,
             window_height,
             buffer,
@@ -63,14 +61,15 @@ impl BouncyBox {
     * returns the buffer offset to begin writing on.
      */
     fn flip_buffer_in_use(&mut self) -> u32 {
-        let flags_1 = self.buffer.get_index(self.area_size as u32 * 2); //flags_2 is the same index +1
+        let flags_1 = self.buffer[self.area_size * 2]; //flags_2 is the same index +1
         let busy_buffer = flags_1 ^ 0x1;
-        self.buffer
-            .set_index(self.area_size as u32 * 2, busy_buffer);
+        self.buffer[self.area_size * 2] = busy_buffer;
         busy_buffer * self.area_size as u32
     }
     pub fn clear_screen(&mut self, buffer_offset: u32) {
-        self.buffer.fill(0, buffer_offset, self.area_size as u32);
+        for value in self.buffer.iter_mut().skip(buffer_offset as usize).take(self.area_size){
+            *value = 0;
+        }
     }
     pub fn game_step(&mut self, window : &Window) {
         let offset = self.flip_buffer_in_use(); //take one buffer and flag it as busy
@@ -80,11 +79,11 @@ impl BouncyBox {
                 let pixel = i + self.pos_x + (j + self.pos_y) * self.window_width as u32;
                 #[cfg(feature = "web")]
                 {
-                    self.buffer.set_index(offset + pixel, 0xFF42F5AD); //ABGR
+                    self.buffer[(offset + pixel) as usize] = 0xFF42F5AD; //ABGR
                 }
                 #[cfg(not(feature = "web"))]
                 {
-                    self.buffer.set_index(offset + pixel, 0xFFADF542); //ARGB
+                    self.buffer[(offset + pixel) as usize] = 0xFFADF542; //ARGB
                 }
             }
         }
@@ -461,7 +460,7 @@ impl Map0 {
         some_map
     }
 }
-
+/*
 fn horizontal_distance_to_wall(pos_x: u16, pos_y: u16, map: &Map0, angle: f32) {
     let mut constant: f32;
     // first we check the horizontal cases:
@@ -514,5 +513,5 @@ fn horizontal_distance_to_wall(pos_x: u16, pos_y: u16, map: &Map0, angle: f32) {
         / TILE_SIZE)
         .floor()) as u16;
 }
-
+*/
 
