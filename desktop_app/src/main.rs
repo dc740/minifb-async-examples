@@ -24,7 +24,7 @@ fn main() {
 
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
-            .update_with_buffer(&boxy.buffer, WIDTH, HEIGHT)
+            .update_with_buffer(boxy.get_buffer_to_print(), WIDTH, HEIGHT)
             .unwrap();
     }
 }

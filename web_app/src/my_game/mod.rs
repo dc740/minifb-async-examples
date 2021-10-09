@@ -61,15 +61,25 @@ impl BouncyBox {
     * returns the buffer offset to begin writing on.
      */
     fn flip_buffer_in_use(&mut self) -> u32 {
-        let flags_1 = self.buffer[self.area_size * 2]; //flags_2 is the same index +1
-        let busy_buffer = flags_1 ^ 0x1;
+        let busy_buffer = self.buffer[self.area_size * 2] ^ 0x1;
         self.buffer[self.area_size * 2] = busy_buffer;
-        busy_buffer * self.area_size as u32
+        (busy_buffer & 0x1) * self.area_size as u32
     }
+
+	/**
+	 * return a slice in the buffer that is NOT being edited
+	 */
+	pub fn get_buffer_to_print(&mut self) -> &[u32] {
+		let current_buffer = (self.buffer[self.area_size * 2] & 0x1) as usize;
+		let start_offset = (current_buffer * self.area_size) as usize;
+		&self.buffer[ start_offset .. start_offset + self.area_size as usize ]
+	}
+	
     pub fn clear_screen(&mut self, buffer_offset: u32) {
-        for value in self.buffer.iter_mut().skip(buffer_offset as usize).take(self.area_size){
-            *value = 0;
-        }
+        self.buffer.iter_mut()
+			.skip(buffer_offset as usize)
+			.take(self.area_size)
+			.for_each(|value| *value = 0);
     }
     pub fn game_step(&mut self, window : &Window) {
         let offset = self.flip_buffer_in_use(); //take one buffer and flag it as busy

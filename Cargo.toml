@@ -1,7 +1,4 @@
 [workspace]
-members = [
-    "web_app",
-    "desktop_app"
-]
+members = [ "web_app", "desktop_app" ]
 
 
