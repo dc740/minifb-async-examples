@@ -23,6 +23,7 @@ pub struct BouncyBox {
     pub window_width: usize,
     pub window_height: usize,
     pub buffer: Vec<u32>,
+    buffer_n: usize,
     pos_x: u32,
     pos_y: u32,
     step_x: i32,
@@ -33,9 +34,7 @@ pub struct BouncyBox {
 
 impl BouncyBox {
     pub fn new(window_width: usize, window_height: usize) -> BouncyBox {
-        //the last 8 bytes are reserved to indicate which buffer to read from
-        //and other flags I may need in the future. AKA: I'm lazy and it was easier this way.
-        let buffer_len: usize = (1 + window_width * window_height) * 4 * 2;
+        let buffer_len: usize = (window_width * window_height) * 4 * 2;
         let buffer : Vec<u32> = vec![0; buffer_len];
         let pos_x: u32 = 0;
         let pos_y: u32 = 0;
@@ -46,6 +45,7 @@ impl BouncyBox {
             window_width,
             window_height,
             buffer,
+            buffer_n: 0,
             pos_x,
             pos_y,
             step_x,
@@ -54,46 +54,38 @@ impl BouncyBox {
             area_size: window_width * window_height, //store the real size of the screen
         }
     }
-    /**
-    * We store the buffer we are about to write to.
-    * The reader will always read from whatever is not
-    * in use, so it will always be a complete buffer.
-    * returns the buffer offset to begin writing on.
-     */
-    fn flip_buffer_in_use(&mut self) -> u32 {
-        let busy_buffer = self.buffer[self.area_size * 2] ^ 0x1;
-        self.buffer[self.area_size * 2] = busy_buffer;
-        (busy_buffer & 0x1) * self.area_size as u32
+
+    fn flip_buffer_in_use(&mut self) {
+        if self.buffer_n == 0 {
+            self.buffer_n = 1;
+        } else {
+            self.buffer_n = 0;
+        }
     }
 
 	/**
-	 * return a slice in the buffer that is NOT being edited
+	 * return a slice in the buffer that has just been updated
 	 */
 	pub fn get_buffer_to_print(&mut self) -> &[u32] {
-		let current_buffer = (self.buffer[self.area_size * 2] & 0x1) as usize;
-		let start_offset = (current_buffer * self.area_size) as usize;
+		let start_offset = self.buffer_n * self.area_size as usize;
 		&self.buffer[ start_offset .. start_offset + self.area_size as usize ]
 	}
 	
-    pub fn clear_screen(&mut self, buffer_offset: u32) {
-        self.buffer.iter_mut()
-			.skip(buffer_offset as usize)
-			.take(self.area_size)
-			.for_each(|value| *value = 0);
-    }
     pub fn game_step(&mut self, window : &Window) {
-        let offset = self.flip_buffer_in_use(); //take one buffer and flag it as busy
-        self.clear_screen(offset);
+        self.flip_buffer_in_use();
+        let offset = self.buffer_n * self.area_size as usize;
+        self.buffer.iter_mut().skip(offset).take(self.area_size as usize)
+            .for_each(|value| *value = 0);
         for i in 0..self.cube_size {
             for j in 0..self.cube_size {
                 let pixel = i + self.pos_x + (j + self.pos_y) * self.window_width as u32;
                 #[cfg(feature = "web")]
                 {
-                    self.buffer[(offset + pixel) as usize] = 0xFF42F5AD; //ABGR
+                    self.buffer[offset + pixel as usize] = 0xFF42F5AD; //ABGR
                 }
                 #[cfg(not(feature = "web"))]
                 {
-                    self.buffer[(offset + pixel) as usize] = 0xFFADF542; //ARGB
+                    self.buffer[offset + pixel as usize] = 0xFFADF542; //ARGB
                 }
             }
         }
