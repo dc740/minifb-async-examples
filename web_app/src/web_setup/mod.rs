@@ -1,4 +1,3 @@
-pub(crate) mod loader;
 pub(crate) mod error;
 
 use console_error_panic_hook;

@@ -15,14 +15,14 @@ desktop = [ "minifb/default" ]
 
 
 [dependencies]
-console_error_panic_hook = "0.1.6"
-wasm-bindgen = "0.2.74"
-web-sys = "0.3.51"
-instant = "0.1.9"
+console_error_panic_hook = "0.1.7"
+wasm-bindgen = "0.2.79"
+web-sys = "0.3.56"
+instant = "0.1.12"
 minifb = { git = 'https://github.com/dc740/rust_minifb.git', branch = 'wasm_websys_wip', default-features = false }
-js-sys = "0.3.51"
+js-sys = "0.3.56"
 wasm-rs-shared-channel = "0.1.0"
-wasm-bindgen-futures = "0.4.24"
+wasm-bindgen-futures = "0.4.29"
 
 # Set these to `false` when running on 32 bit platforms.
 # there is a bug in wasm-pack https://github.com/rustwasm/wasm-pack/issues/974

@@ -17,7 +17,6 @@ use minifb::{Key, Window};
  * I was not that bored to keep writting anyway. What are
  * you doing with your life?
  */
-use js_sys::Math::tan;
 
 pub struct BouncyBox {
     pub window_width: usize,
@@ -35,7 +34,7 @@ pub struct BouncyBox {
 impl BouncyBox {
     pub fn new(window_width: usize, window_height: usize) -> BouncyBox {
         let buffer_len: usize = (window_width * window_height) * 4 * 2;
-        let buffer : Vec<u32> = vec![0; buffer_len];
+        let buffer: Vec<u32> = vec![0; buffer_len];
         let pos_x: u32 = 0;
         let pos_y: u32 = 0;
         let step_x: i32 = 1;
@@ -63,18 +62,21 @@ impl BouncyBox {
         }
     }
 
-	/**
-	 * return a slice in the buffer that has just been updated
-	 */
-	pub fn get_buffer_to_print(&mut self) -> &[u32] {
-		let start_offset = self.buffer_n * self.area_size as usize;
-		&self.buffer[ start_offset .. start_offset + self.area_size as usize ]
-	}
-	
-    pub fn game_step(&mut self, window : &Window) {
+    /**
+     * return a slice in the buffer that has just been updated
+     */
+    pub fn get_buffer_to_print(&mut self) -> &[u32] {
+        let start_offset = self.buffer_n * self.area_size as usize;
+        &self.buffer[start_offset..start_offset + self.area_size as usize]
+    }
+
+    pub fn game_step(&mut self, window: &Window) {
         self.flip_buffer_in_use();
         let offset = self.buffer_n * self.area_size as usize;
-        self.buffer.iter_mut().skip(offset).take(self.area_size as usize)
+        self.buffer
+            .iter_mut()
+            .skip(offset)
+            .take(self.area_size as usize)
             .for_each(|value| *value = 0);
         for i in 0..self.cube_size {
             for j in 0..self.cube_size {
@@ -516,4 +518,3 @@ fn horizontal_distance_to_wall(pos_x: u16, pos_y: u16, map: &Map0, angle: f32) {
         .floor()) as u16;
 }
 */
-
