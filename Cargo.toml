@@ -1,4 +1,5 @@
 [workspace]
 members = [ "web_app", "desktop_app" ]
+default-members = ["desktop_app"]
 
 

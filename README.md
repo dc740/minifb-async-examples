@@ -1,4 +1,5 @@
 # minifb multiplatform (webassembly too!) example
+
 This project can be compiled to webassembly and desktop.
 
 There is only one thing to keep in mind:
@@ -13,6 +14,8 @@ conditional compilation.
 * make sure you have wasm-pack installed: cargo install wasm-pack
 * Run ./build_web.sh on linux to compile and start a demo server.
 
+(the demo server is written in Python 3, so make is installed)
+
 ## How to run in a desktop
 
-* cargo run -p desktop_app
+* cargo run --release
